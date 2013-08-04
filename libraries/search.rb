@@ -23,8 +23,11 @@ module ::Openstack
   # @param [String] role The role to be found.
   # @return [Array] The matching result or an empty list.
   def search_for role, &block
-    query = "chef_environment:#{node.chef_environment} AND roles:#{role}"
-
+    unless node.run_list.roles.include?(role)
+      query = "chef_environment:#{node.chef_environment} AND roles:#{role}"
+    else
+      resp = node
+    end
     resp = search(:node, query, &block)
     resp ? resp : []
   end
